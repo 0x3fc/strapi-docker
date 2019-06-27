@@ -1,0 +1,33 @@
+version: "3"
+services:
+  core:
+    build: .
+    ports:
+      - 1337:1337
+    environment:
+      DATABASE_HOST: database
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - ./api:/opt/strapi/api
+      - ./config:/opt/strapi/config
+      - ./extensions:/opt/strapi/extensions
+      - ./public:/opt/strapi/public
+      - ./.env:/opt/strapi/.env
+      - ./favicon.ico:/opt/strapi/favicon.ico
+      - ./package.json:/opt/strapi/package.json
+      - ./yarn.lock:/opt/strapi/yarn.lock
+    links:
+      - database
+  database:
+    image: postgres:alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    volumes:
+      - ./database:/data/db
